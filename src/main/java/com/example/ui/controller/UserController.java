@@ -1,6 +1,9 @@
 package com.example.ui.controller;
 
 import com.example.ui.model.response.UserRest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,8 +16,14 @@ public class UserController {
         return "Get User was called with page = " + page + " and limit = " + limit;
     }
 
-    @GetMapping(path = "/{userid}")
-    public UserRest getUser(@PathVariable String userid) {
+    //    If we provide produces = MediaType.APPLICATION_XML_VALUE, it'll make our application to respond
+    //    with XML only, So we need to give both XML and JSON format.
+    @GetMapping(path = "/{userid}",
+            produces = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            })
+    public ResponseEntity<UserRest> getUser(@PathVariable String userid) {
         UserRest returnValue = new UserRest();
 
         returnValue.setFirstName("Saurav");
@@ -22,7 +31,7 @@ public class UserController {
         returnValue.setEmail("saurav.verma97@gmail.com");
         returnValue.setUserid(userid);
 
-        return returnValue;
+        return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
     }
 
     @PostMapping
