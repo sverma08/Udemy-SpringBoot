@@ -1,6 +1,10 @@
 package com.example.ui.controller;
 
+import com.example.ui.model.request.UserDetailsRequestModel;
 import com.example.ui.model.response.UserRest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +17,11 @@ public class UserController {
         return "Get User was called with page = " + page + " and limit = " + limit;
     }
 
-    @GetMapping(path = "/{userid}")
+    @GetMapping(path = "/{userid}",
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+            })
     public UserRest getUser(@PathVariable String userid) {
         UserRest returnValue = new UserRest();
 
@@ -25,10 +33,24 @@ public class UserController {
         return returnValue;
     }
 
-    @PostMapping
-    public String createUser() {
+    @PostMapping(
+            consumes = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+            },
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+            })
+    public ResponseEntity<UserRest> createUser(@RequestBody UserDetailsRequestModel userDetails) {
 
-        return "Create User was called!";
+        UserRest returnValue = new UserRest();
+
+        returnValue.setFirstName(userDetails.getFirstName());
+        returnValue.setLastName(userDetails.getLastName() );
+        returnValue.setEmail(userDetails.getEmail());
+
+        return new ResponseEntity<>(returnValue, HttpStatus.OK);
     }
 
     @PutMapping
